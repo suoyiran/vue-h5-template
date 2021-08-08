@@ -5,7 +5,7 @@
 export const constantRouterMap = [
   {
     path: '/',
-    component: () => import('@/views/layouts/index'),
+    component: () => import('@/views/home'),
     redirect: '/home',
     meta: {
       title: '首页',
@@ -15,25 +15,46 @@ export const constantRouterMap = [
       {
         path: '/home',
         name: 'Home',
-        component: () => import('@/views/home/index'),
+        component: () => import('@/views/home'),
         meta: { title: '首页' }
-      },
-      {
-        path: '/about',
-        name: 'About',
-        component: () => import('@/views/home/about'),
-        meta: { title: '关于我' }
       }
     ]
   },
   {
-    path: '/mine/login',
-    name: '登录',
-    component: () => import('@/views/mine/login')
+    path: '/user',
+    name: 'User',
+    component: () => import('@/views/user'),
+    meta: {
+      title: '个人页'
+    }
+  },
+  {
+    path: '/user/sign',
+    name: 'User',
+    component: () => import('@/views/user/sign'),
+    meta: {
+      title: '登录'
+    }
+  },
+  {
+    path: '/user/password',
+    name: 'Password',
+    component: () => import('@/views/user/password'),
+    meta: {
+      title: '修改密码'
+    }
+  },
+  {
+    path: '/user/personal',
+    name: 'Personal',
+    component: () => import('@/views/user/personal'),
+    meta: {
+      title: '个人信息'
+    }
   },
   {
     path: '/404',
-    name: '错误页',
+    name: 'Notfound',
     component: () => import('@/components/Notfound')
   },
   {

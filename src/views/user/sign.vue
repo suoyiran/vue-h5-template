@@ -85,8 +85,7 @@
         登录并绑定
       </van-button>
     </div>
-
-    <!-- <div class="xipa">
+    <div class="xipa">
       <van-divider :style="{ color: '#fff'}">OR</van-divider>
     </div>
     <div class="othericon">
@@ -96,7 +95,7 @@
         plain
         type="primary"
       ><i class="iconfont iconweixin"> </i><span>微信登录</span><i></i></van-button>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -114,7 +113,7 @@ export default {
     return {
       loginSwitchs: false,
       heightGround: 667,
-      headImg: require('../../assets/headover.jpg'),
+      headImg: require('../../assets/head.jpg'),
       countdown: 0,
       data: {
         username: '',
@@ -127,13 +126,10 @@ export default {
         nickname: '',
         mobile: '',
         code: ''
-      },
-      error_text: '',
-      formId: '148fe1e5-673a-4656-8412-364ff92f7d52'
+      }
     }
   },
   created() {
-    console.log(this.$route)
     this.heightGround = window.screen.height
     // if (this.$route.query.queryname !== 'we_chart') {
     //   this.wechat_sign()
@@ -156,7 +152,6 @@ export default {
       if (this.loginSwitchs && !this.data.code.match()) {
         return Toast('验证码最大为6位')
       }
-      localStorage.clear()
       let res
       if (this.loginSwitchs) {
         res = await httpClient.post('/auth/code', {
@@ -166,7 +161,6 @@ export default {
         console.log(res)
 
         if (res.code !== 200) {
-          // this.getquan(res.msg)
           Toast(res.msg)
           return
         }
@@ -176,11 +170,8 @@ export default {
           username: this.data.mobile2,
           password: this.data.password
         }
-        res = await this.$api.report.login(params)
-        // res = await httpClient.post('/auth/login', )
-        console.log(res)
+        res = await httpClient.post('/auth/login', params)
         if (res.code !== 200) {
-          // this.getquan(res.msg)
           Toast(res.msg)
           return
         }
@@ -190,68 +181,13 @@ export default {
       const unionId = Cookies.get('unionId')
       await this.personal()
       if (unionId && await this.connect(unionId)) {
-        // if(isCengban){
-        //   this.$router.push('/cengban-list');
-        // }else{
-        //   this.$router.push('/item');
-        // }
         this.$router.push('/')
         Toast('登录并绑定账号成功')
       } else {
-        // if(isCengban){
-        //   this.$router.push('/cengban-list');
-        // }else{
-        //   this.$router.push('/item');
-        // }
         this.$router.push('/')
         Toast('登录成功')
       }
       Cookies.remove('unionId')
-      // this.$router.push('/mine/signlook')
-    },
-    async getquan(text) {
-      const resp = await httpClient.get('/reports/query', {
-        params: {
-          tel: this.loginSwitchs ? this.data.mobile : this.data.mobile2,
-          _from: 'public',
-          formId: this.formId
-        } // 搜索参数对象
-      })
-      console.log(resp)
-      if (resp.code !== 200) {
-        this.error_text = resp.msg
-        return false
-      }
-      const quans = resp.data.content
-      if (quans.length > 0) {
-        switch (quans[0].status) {
-          case 0:
-            this.error_text = '用户信息还未审核，请耐心等待！'
-            break
-          case 5:
-            this.error_text = '用户信息正在审核，请耐心等待！'
-            break
-          case -5:
-            if (quans[0].processes.length > 0) {
-              this.error_text = `用户信息已被驳回，请重新注册！驳回原因：${quans[0].processes[0].message}`
-            } else {
-              this.error_text = '用户信息已被驳回，请重新注册！'
-            }
-            break
-          case 10:
-            this.error_text = text
-            break
-        }
-        Toast({
-          icon: 'error',
-          message: this.error_text
-        })
-      } else {
-        Toast({
-          icon: 'error',
-          message: text
-        })
-      }
     },
     connect: async function(unionId) {
       const res = await httpClient.post('connects', {
@@ -266,26 +202,11 @@ export default {
         // 判断是否管理员
         const meInfo = res.data
         const isAdmin = meInfo.roles.includes('ROLE_ADMIN') || meInfo.roles.includes('ROLE_SITE_ADMIN')
-        const isLingdao = meInfo.roles.includes('ROLE_LINGDAO') && meInfo.roles.includes('ROLE_SITE_ADMIN')
-        const isCengban = meInfo.roles.includes('ROLE_CBDW')
-        // 领导级别高
-        if (isLingdao) {
-          localStorage.isAdmin = false
-        } else {
-          localStorage.isAdmin = isAdmin
-        }
-        localStorage.isCengban = isCengban
-        localStorage.isLingdao = isLingdao
-        console.log(isCengban)
-
-        if (isCengban) {
-          return true
-        } else {
-          return false
-        }
+        localStorage.isAdmin = isAdmin
       } else {
         if (res.code === 401) {
           Toast('身份过期，请重新登录')
+          localStorage.clear()
         } else {
           Toast('请求错误' + res.msg)
         }
@@ -295,7 +216,6 @@ export default {
       if (this.data.mobile.trim() === '') {
         return Toast('输入不能为空')
       }
-      // /^[1][3,5,6,7,8,9][0-9]{9}$/
       if (!this.data.mobile.match(/^[1][3,5,6,7,8,9][0-9]{9}$/)) {
         return Toast('请输入正确的手机号码')
       }
@@ -303,7 +223,6 @@ export default {
         mobile: this.data.mobile,
         usage: 'login'
       }).then((res) => {
-        console.log(res)
         var code = res.code
         if (code === 200) {
           Toast('发送成功')
@@ -334,7 +253,6 @@ export default {
     },
     // 微信登录
     async wechat_sign() {
-      // console.log('hi')
       const res = await httpClient.get('oauth/login')
       console.log(res)
       if (res.code !== 200) {
@@ -473,5 +391,8 @@ export default {
   .van-cell {
     background-color: transparent;
   }
+}
+::v-deep .van-cell::after {
+  border: none;
 }
 </style>

@@ -1,54 +1,70 @@
 <template>
-  <div>
-    <van-tabbar fixed route v-model="active" @change="handleChange">
-      <van-tabbar-item v-for="(item, index) in data" :to="item.to" :icon="item.icon" :key="index">
-        {{ item.title }}
-      </van-tabbar-item>
+  <div class="bottom">
+    <van-tabbar
+      route
+      inactive-color="#999999"
+      z-index='999'
+    >
+      <van-tabbar-item
+        v-for='(item,inx) in items'
+        :key='inx'
+        replace
+        :to="item.path"
+      >{{item.name}}<template #icon>
+          <i :class="'iconfont '+item.icon" />
+        </template></van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
+
 <script>
 export default {
-  name: 'TabBar',
-  props: {
-    defaultActive: {
-      type: Number,
-      default: 0
-    },
-    data: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    }
-  },
+  props: ['number'],
   data() {
     return {
-      active: this.defaultActive
+      items: [{ name: '首页', path: '/home', icon: 'iconshouye1-copy' }, { name: '我的', path: '/user', icon: 'iconwodedangxuan' }]
     }
   },
   methods: {
-    handleChange(value) {
-      this.$emit('change', value)
-    }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
+<style lang="scss" scoped>
+.bottom {
+  width: 100%;
+  height: 49px;
+  color: #999999;
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
+  z-index: 9999;
+  .iconfont {
+    font-size: 18px;
+  }
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.bottom-ul {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+
+.bottom-ul > li {
+  height: 100%;
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-a {
-  color: #42b983;
+.bottom-ul > li > i {
+  font-size: 24px;
+}
+
+.bottom-ul > li > span {
+  font-size: 12px;
+  line-height: 16px;
 }
 </style>

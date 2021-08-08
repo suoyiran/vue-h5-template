@@ -14,14 +14,15 @@
       :key="item"
       :title="item"
     />
+    <TabBar />
   </div>
 </template>
 
 <script>
-import Header from '../../components/Header.vue'
 export default {
   components: {
-    Header
+    Header: () => import('../../components/Header'),
+    TabBar: () => import('../../components/TabBar')
   },
   data() {
     return {

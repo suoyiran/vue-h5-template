@@ -11,7 +11,7 @@ const service = axios.create({
   timeout: 5000 // request timeout
 })
 
-const appId = 'web0kw9S21nmD'
+const appId = 'wechatj6FKZXzuBK'
 
 // request拦截器 request interceptor
 service.interceptors.request.use(
@@ -58,7 +58,7 @@ service.interceptors.response.use(
         Toast('身份过期，请重新登录')
         localStorage.clear()
         router.replace({
-          path: '/mine/login',
+          path: '/user/sign',
           query: {
             queryname: 'we_chart'
           }

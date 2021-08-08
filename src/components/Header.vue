@@ -1,7 +1,7 @@
 <template>
   <div style="height:50px;">
     <van-nav-bar
-      :title="title"
+      :title="$route.meta.title"
       left-text=""
       left-arrow
       :z-index="999"
@@ -12,7 +12,7 @@
           <van-icon
             style="font-style: normal"
             name='geren'
-            class-prefix="icon-geren"
+            class-prefix="icongengduo"
             size="18"
           />
         </div>
@@ -27,7 +27,6 @@ export default {
   },
   data() {
     return {
-      title: '标题'
     }
   },
   methods: {
@@ -61,14 +60,14 @@ export default {
   font-size: 0.6rem;
 }
 @font-face {
-  font-family: 'icon-geren';
+  font-family: 'icongengduo';
   src: url('../assets/iconfont/iconfont.ttf') format('truetype');
 }
 
-.icon-geren {
-  font-family: 'icon-geren';
+.icongengduo {
+  font-family: 'icongengduo';
 }
-.icon-geren:before {
-  content: '\e604';
+.icongengduo:before {
+  content: '\e60b';
 }
 </style>

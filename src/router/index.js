@@ -46,8 +46,8 @@ router.beforeEach(async(to, from, next) => {
     next()
   } else {
     const token = localStorage.getItem('authorization')
-    if ((token === null || token === '') && to.path !== '/mine/login') {
-      next('/mine/login')
+    if ((token === null || token === '') && to.path !== '/user/sign') {
+      next('/user/sign')
     } else {
       next()
     }
