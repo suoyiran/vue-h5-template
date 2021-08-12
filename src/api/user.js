@@ -1,10 +1,15 @@
-// 填报接口
+// 用户管理
 import { baseApi } from '@/config'
 import axios from '../utils/request'
-// import qs from 'qs' // 根据需求是否导入QS模块
 
-export default {
-  login(params) {
-    return axios.post(`${baseApi}/auth/login`, params)
+const user = {
+  getUserInfo(params) {
+    return axios.get(`${baseApi}/me`, {
+      params: params
+    })
+  },
+  batchCreation(id, data) {
+    return axios.post(`${baseApi}/sites/${id}/users`, data)
   }
 }
+export default user

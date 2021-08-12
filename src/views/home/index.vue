@@ -3,7 +3,7 @@
   <div class="index-container">
     <Header />
     <div class="warpper">
-      <h1 class="demo-home__title"><img src="https://www.sunniejs.cn/static/weapp/logo.png" /><span> VUE H5开发模板</span></h1>
+      <h1 class="demo-home__title"><img src="https://www.sunniejs.cn/static/weapp/logo.png" /><span @click="form"> VUE H5开发模板</span></h1>
       <h2 class="demo-home__desc">
         A vue h5 template with Vant UI
       </h2>
@@ -52,7 +52,14 @@ export default {
 
   mounted() { },
 
-  methods: {}
+  methods: {
+    form() {
+      this.$router.push({
+        path: '/report',
+        query: { formId: 'a09e8748-1ca4-4727-befc-8031cf078a95' }
+      })
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

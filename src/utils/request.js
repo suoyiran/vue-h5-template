@@ -11,7 +11,7 @@ const service = axios.create({
   timeout: 5000 // request timeout
 })
 
-const appId = 'wechatj6FKZXzuBK'
+const appId = 'TOmRTsUUEB'
 
 // request拦截器 request interceptor
 service.interceptors.request.use(

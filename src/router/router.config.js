@@ -29,8 +29,16 @@ export const constantRouterMap = [
     }
   },
   {
+    path: '/report',
+    name: 'Report',
+    component: () => import('@/views/report/Report'),
+    meta: {
+      title: '信息编辑'
+    }
+  },
+  {
     path: '/user/sign',
-    name: 'User',
+    name: 'Sign',
     component: () => import('@/views/user/sign'),
     meta: {
       title: '登录'

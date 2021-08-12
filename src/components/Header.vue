@@ -8,7 +8,7 @@
       @click-left="onBack"
     >
       <template #right>
-        <div>
+        <div v-if='false'>
           <van-icon
             style="font-style: normal"
             name='geren'
@@ -46,18 +46,13 @@ export default {
   position: fixed;
   z-index: 999;
   top: 0;
+  background: rgb(88, 141, 219);
 }
-.van-nav-bar__title {
+::v-deep .van-nav-bar .van-icon{
   color: #fff;
 }
-.van-icon-arrow-left:before {
-  content: '\F008';
+::v-deep .van-nav-bar__title {
   color: #fff;
-}
-.van-icon-user-o:before {
-  content: '\F0CC';
-  color: #fff;
-  font-size: 0.6rem;
 }
 @font-face {
   font-family: 'icongengduo';
