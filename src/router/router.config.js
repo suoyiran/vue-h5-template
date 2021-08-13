@@ -61,6 +61,15 @@ export const constantRouterMap = [
     }
   },
   {
+    path: '/list',
+    name: 'List',
+    component: () => import('@/views/list/list'),
+    meta: {
+      title: '项目列表',
+      keepAlive: true
+    }
+  },
+  {
     path: '/404',
     name: 'Notfound',
     component: () => import('@/components/Notfound')

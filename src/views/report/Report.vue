@@ -37,6 +37,7 @@ import Upload from '../../components/Upload'
 import userPhoto from '../../assets/head.jpg'
 import { ruleFormat } from '../../utils/form'
 import httpClient from '../../utils/request'
+import { Toast } from 'vant'
 Vue.use(iView)
 export default {
   components: {
@@ -88,6 +89,7 @@ export default {
     // 如果有项目ID，就获取赋值
     if (this.$route.query.id) {
       this.projectId = this.$route.query.id
+      console.log(this.projectId)
     }
     this.createForm(this.formId, this.projectId)
     this.getFormsSelect()
@@ -115,7 +117,7 @@ export default {
       const rule = await ruleFormat(formRule) // 过滤表单规则
       this.formCreateRule.rule = rule // 将过滤后的规则赋值给表单组件
       const formData = await this.inputValue(projectId) // 获取项目数据
-      await this.initFormData(formData, formRule)
+      await this.initFormData(rule, formData, formRule)
     },
     // 获取创建表单的原始规则
     async formRule(formId) {
@@ -192,8 +194,7 @@ export default {
       })
     },
     // 初始化表单数据
-    async initFormData(formData, formRule) {
-      const rule = await ruleFormat(formRule)
+    async initFormData(rule, formData, formRule) {
       if (formData) {
         for (const key in formData) {
           rule.map(val => {
@@ -223,103 +224,78 @@ export default {
       // 判断是否有项目ID，新增项目是没有项目ID的
       if (projectId) {
         const projectInfo = await httpClient.get(`/reports/${projectId}/detail`)
-        return projectInfo.data.data.data
+        return projectInfo.data.data
       } else {
         return null
       }
     },
     // 保存按钮
-    saveBtn() {
+    saveBtn:
+    _.throttle(function() {
       this.formCreateRule.fApi.validate((valid) => {
         if (valid) {
-          this.saveData(this.formId, this.projectId)
-        } else {
-          this.$swal({
-            title: '表单验证未通过',
-            text: '请查看红色表单项与提示',
-            icon: 'warning',
-            confirmButtonText: '知道了'
+          this.formCreateRule.fApi.submit(async(formData) => {
+            this.saveData(this.formId, this.projectId, await this.filterFormData(formData))
           })
+        } else {
+          Toast.fail('表单验证未通过')
         }
       })
-    },
+    }, 1500, { 'trailing': false }),
     // 提交按钮
-    submitBtn() {
+    submitBtn:
+    _.throttle(function() {
       this.formCreateRule.fApi.validate((valid) => {
         if (valid) {
-          this.submitData(this.formId, this.projectId)
-        } else {
-          this.$swal({
-            title: '表单验证未通过',
-            text: '请查看红色表单项与提示',
-            icon: 'warning',
-            confirmButtonText: '知道了'
+          this.formCreateRule.fApi.submit(async(formData) => {
+            this.submitData(this.formId, this.projectId, await this.filterFormData(formData))
           })
+        } else {
+          Toast.fail('表单验证未通过')
         }
       })
-    },
+    }, 1500, { 'trailing': false }),
     // 格式化表单数据
-    filterFormData() {
-      let ysFormData = null
-      this.formCreateRule.fApi.submit((formData) => {
-        ysFormData = formData
+    filterFormData(formData) {
+      const obj = formData
+      Object.keys(obj).forEach(item => {
+        if (Array.isArray(obj[item]) && !obj[item].length) delete obj[item]
+        if (Array.isArray(obj[item])) obj[item] = obj[item].toString()
+        if (obj[item] === '' || obj[item] === null || obj[item] === ',') delete obj[item]
       })
-      for (const data in ysFormData) {
-        if (typeof ysFormData[data] === 'string') {
-          if (ysFormData[data] === '') {
-            ysFormData[data] = null
-          }
-        } else if (ysFormData[data] instanceof Array) {
-          if (ysFormData[data].length === 0) {
-            ysFormData[data] = null
-          } else if (ysFormData[data][0] === '') {
-            ysFormData[data] = null
-          } else {
-            ysFormData[data] = ysFormData[data].toString()
-          }
-        }
-      }
-      return ysFormData
+      return obj
     },
     // 保存表单数据
-    saveData(formId, id) {
+    async saveData(formId, id, filterFormData) {
       let requert = null
-      const filterFormData = this.filterFormData()
-      const weight = filterFormData.weight ? filterFormData.weight : 1000000
+      const weight = filterFormData.weight !== null ? filterFormData.weight : 1000000
       if (!id) {
         requert = httpClient.post(`/forms/${formId}/reports3`, {
-          data: this.filterFormData(),
+          data: filterFormData,
           status: 0,
           weight: weight
         })
       } else {
         requert = httpClient.put(`/reports/${id}/update3`, {
-          data: this.filterFormData(),
+          data: filterFormData,
           weight: weight
         })
       }
       requert.then((res) => {
-        this.$swal({
-          title: '保存成功!',
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 1500
-        })
-        this.$router.go(-1)
+        Toast.success('保存成功')
+        setTimeout(() => {
+          this.$router.go(-1)
+        }, 500)
       })
         .catch((err) => {
           console.log(err)
-          this.$swal({
-            title: '保存失败!',
-            icon: 'error'
-          })
+          Toast('保存失败')
         })
     },
     // 提交表单数据
-    submitData(formId, id) {
+    submitData(formId, id, filterFormData) {
       let requert = null
-      const filterFormData = this.filterFormData()
-      const weight = filterFormData.weight ? filterFormData.weight : 1000000
+      const weight = filterFormData.weight !== null ? filterFormData.weight : 1000000
       if (!id) {
         requert = httpClient.post(`/forms/${formId}/reports3`, {
           data: filterFormData,
@@ -340,29 +316,20 @@ export default {
           projectId = res.data.id
         }
         httpClient.put(`/reports/${projectId}/submit`)
-          .then(res => {
-            this.$swal({
-              title: '提交成功!',
-              icon: 'success',
-              showConfirmButton: false,
-              timer: 1500
-            })
-            this.$router.go(-1)
+          .then(async res => {
+            Toast.success('提交成功')
+            setTimeout(() => {
+              this.$router.go(-1)
+            }, 500)
           })
           .catch((err) => {
             console.log(err)
-            this.$swal({
-              title: '提交失败!',
-              icon: 'error'
-            })
+            Toast('提交失败')
           })
       })
         .catch((err) => {
           console.log(err)
-          this.$swal({
-            title: '提交失败!',
-            icon: 'error'
-          })
+          Toast('提交失败')
         })
     }
   }

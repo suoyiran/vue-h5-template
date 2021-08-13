@@ -7,14 +7,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import Vant from 'vant'
+import './plugins/vant'
 import 'vant/lib/index.css'
 import '@/assets/iconfont/iconfont.css'
 import _ from 'lodash'
 import api from '../src/api'
 Vue.prototype.$api = api
-Vue.prototype._ = _
-Vue.use(Vant)
+Vue.prototype.$_ = _
 
 // 设置 js中可以访问 $cdn
 import { $cdn } from '@/config'

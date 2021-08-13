@@ -114,7 +114,6 @@ export default {
 
 <style lang="scss">
 .logcells {
-  background-color: #f8f8fa;
 
   .van-cell {
     width: 84%;
@@ -122,7 +121,6 @@ export default {
     margin: 0 8%;
     border-bottom: 1px solid #ececec;
     font-size: 15px;
-    background-color: #f8f8fa;
   }
 
   i {

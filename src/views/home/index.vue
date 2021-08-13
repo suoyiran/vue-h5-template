@@ -13,6 +13,7 @@
       v-for="item in list"
       :key="item"
       :title="item"
+      @click="jump"
     />
     <TabBar />
   </div>
@@ -56,7 +57,13 @@ export default {
     form() {
       this.$router.push({
         path: '/report',
-        query: { formId: 'a09e8748-1ca4-4727-befc-8031cf078a95' }
+        query: { formId: '01bae7fc-6c89-49a1-9b9f-e5d23dac854d' }
+      })
+    },
+    jump() {
+      this.$router.push({
+        path: '/list',
+        query: { formId: '01bae7fc-6c89-49a1-9b9f-e5d23dac854d' }
       })
     }
   }

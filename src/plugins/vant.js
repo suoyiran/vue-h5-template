@@ -1,7 +1,8 @@
 // 按需全局引入 vant组件
-// import Vue from 'vue'
-// import { Button, List, Cell, Tabbar, TabbarItem } from 'vant'
-// Vue.use(Button)
-// Vue.use(Cell)
-// Vue.use(List)
-// Vue.use(Tabbar).use(TabbarItem)
+import Vue from 'vue'
+import Vant from 'vant'
+import { Toast } from 'vant'
+Toast.setDefaultOptions({ duration: 500 })
+Toast.setDefaultOptions('loading', { forbidClick: true })
+
+Vue.use(Vant)

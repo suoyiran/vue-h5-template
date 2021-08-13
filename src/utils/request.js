@@ -53,6 +53,7 @@ service.interceptors.response.use(
     Toast.clear()
     const res = response.data
     if (res.status && res.status !== 200) {
+      console.log(res)
       // 登录超时,重新登录
       if (res.status === 401) {
         Toast('身份过期，请重新登录')
@@ -70,9 +71,28 @@ service.interceptors.response.use(
     }
   },
   error => {
-    Toast.clear()
-    console.log('err' + error) // for debug
-    return Promise.reject(error)
+    if (error.response) {
+      let data = error.response.data
+      if (!data) {
+        data = {
+          code: error.response.status,
+          msg: error.response.statusText
+        }
+      }
+      if (data.code === 401) {
+        Toast('身份过期，请重新登录')
+        localStorage.clear()
+        router.replace({
+          path: '/user/sign',
+          query: {
+            queryname: 'we_chart'
+          }
+        })
+      }
+      Toast.clear()
+      console.log('err' + error) // for debug
+      return Promise.resolve(data)
+    }
   }
 )
 
